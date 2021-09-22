@@ -1,0 +1,59 @@
+body {
+    text-align: center;
+}
+
+h1 {
+    font-size: 59px;
+}
+
+#search {
+    position:absolute;
+}
+
+section {
+    border: 2px solid black;
+    width: 200px;
+    display: inline-block;
+    position: relative;
+    margin-right: 50px;
+    margin-top: 140px;
+}
+ul {
+    list-style-type: none;
+}
+
+li {
+    border: 1px solid purple;
+    padding: 2px;
+    margin: 0;
+}
+
+#to-do-sec {
+    border: 2px solid red;
+}
+#to-do-sec li {
+    border: 1px solid red;
+    padding: 2px;
+    margin-top: 3px;
+}
+
+#in-progress-sec {
+    border: 2px solid rgb(255, 196, 0);
+}
+#in-progress-sec li {
+    border: 1px solid rgb(255, 166, 0);
+    padding: 2px;
+    margin-top: 3px;
+}
+
+#done-sec {
+    border: 2px solid green;
+}
+#done-sec li {
+    border: 1px solid green;
+    padding: 2px;
+    margin-top: 3px;
+}
+
+
+
