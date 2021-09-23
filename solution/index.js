@@ -9,46 +9,66 @@ const inputDone = document.getElementById("add-done-task")
 const ulToDo  = document.getElementsByClassName("to-do-tasks")[0]
 const ulInProgress  = document.getElementsByClassName("in-progress-tasks")[0]
 const ulDone  = document.getElementsByClassName("done-tasks")[0]
+const liElements = document.querySelectorAll(".task")
+
+const tasks = {
+    "todo": [],
+    "in-progress": [],
+    "done": []
+}
+
+const getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"))
+
+for (let key in getLocalStorageTasks) {
+    for(let ele of getLocalStorageTasks[key]) {
+        if (key === "todo") {
+            addStorageToDom(ele,ulToDo,"todo")
+        }
+        if (key === "in-progress") {
+            addStorageToDom(ele,ulInProgress,"in-progress")
+        }
+        if (key === "done"){
+            addStorageToDom(ele, ulDone, "done")
+        }
+    }
+}
+
+function addStorageToDom(z,ul,key) {
+    tasks[key].push(z)
+    const list = document.createElement("li")
+    list.textContent = z
+    list.classList.add("task")
+    ul.insertBefore(list,ul.firstChild)
+}
+
 
 
 document.body.addEventListener("click",chack)
 function chack(e) {
     if (e.target.id === "submit-add-to-do"){
-        if (inputToDo.value === "") {
+        if (!inputToDo.value) {
             alert("you can not enter empty task")
         } else {
-            const list = document.createElement("li")
-            list.textContent = inputToDo.value
-            list.classList.add("task")
-            ulToDo.appendChild(list)
+            addStorageToDom(inputToDo.value, ulToDo, "todo")
+            localStorage.setItem("tasks",JSON.stringify(tasks))
         }
     }
     if (e.target.id === "submit-add-in-progress"){
-        if (inputInProgress.value === "") {
+        if (!inputInProgress.value) {
             alert("you can not enter empty task")
         } else {
-            const list = document.createElement("li")
-            list.textContent = inputInProgress.value
-            list.classList.add("task")
-            ulInProgress.appendChild(list)
+            addStorageToDom(inputInProgress.value, ulInProgress, "in-progress")
+            localStorage.setItem("tasks",JSON.stringify(tasks))
         }
     }
     if (e.target.id === "submit-add-done"){
-        if (inputDone.value === "") {
+        if (!inputDone.value) {
             alert("you can not enter empty task")
         } else {
-            const list = document.createElement("li")
-            list.textContent = inputDone.value
-            list.classList.add("task")
-            ulDone.appendChild(list)
+            addStorageToDom(inputDone.value, ulDone, "done")
+            localStorage.setItem("tasks",JSON.stringify(tasks))
         }
     }
-
 }
 
 
-const myLocalStorage = {
-    "todo": [],
-    "in-progress": [],
-    "done": []
-}
