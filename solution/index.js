@@ -9,7 +9,22 @@ const inputDone = document.getElementById("add-done-task")
 const ulToDo  = document.getElementsByClassName("to-do-tasks")[0]
 const ulInProgress  = document.getElementsByClassName("in-progress-tasks")[0]
 const ulDone  = document.getElementsByClassName("done-tasks")[0]
-const liElements = document.querySelectorAll(".task")
+
+const buttonEl = document.getElementsByTagName("button")
+
+
+const searchBar = document.getElementById("search")
+searchBar.addEventListener('keyup', (e) => {
+    const searchString = e.target.value
+    for (let i of liElements) {
+        if (!i.textContent.includes(searchString)) {
+            i.style.display = "none"
+        }
+        else {
+            i.style.display = ""
+        }
+    }
+});
 
 const tasks = {
     "todo": [],
@@ -18,6 +33,22 @@ const tasks = {
 }
 
 const getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"))
+
+const liElements = document.getElementsByTagName("li")
+
+function handleClickEvents() {
+    for (li of liElements) {
+    li.addEventListener("dblclick", listenForDoubleClick)
+    }
+}
+
+function handleMouseEvents() {
+    for (li of liElements) {
+        li.addEventListener("mouseover", altPress)
+    }
+}
+
+
 
 for (let key in getLocalStorageTasks) {
     for(let ele of getLocalStorageTasks[key]) {
@@ -33,13 +64,16 @@ for (let key in getLocalStorageTasks) {
     }
 }
 
-function addStorageToDom(z,ul,key) {
-    tasks[key].push(z)
+function addStorageToDom(task,ul,key) {
+    tasks[key].push(task)
     const list = document.createElement("li")
-    list.textContent = z
+    list.textContent = task
     list.classList.add("task")
     ul.insertBefore(list,ul.firstChild)
 }
+
+handleClickEvents()
+handleMouseEvents()
 
 
 
@@ -69,6 +103,54 @@ function chack(e) {
             localStorage.setItem("tasks",JSON.stringify(tasks))
         }
     }
+    handleMouseEvents()
+    handleClickEvents()
 }
+
+function altPress(event) {
+    console.log(event)
+
+    if (event.altKey===true) {
+       console.log(event.target)
+    }
+}
+
+function listenForDoubleClick(element) {
+    element.target.contentEditable = true;
+    element.target.onblur = function(){
+        updateUl(element.target)
+        localStorage.setItem("tasks", JSON.stringify(tasks))
+        element.target.contentEditable = false;
+    }
+}
+
+
+function updateUl(target) {
+    if (target.parentElement.classList[0] === "done-tasks") {
+        const x = ulDone.querySelectorAll("li")
+        const listOfUlDone = []
+        for(let li of x) {
+            listOfUlDone.unshift(li.textContent)
+        }
+        tasks.done = listOfUlDone
+    }
+    else if ((target.parentElement.classList[0] === "in-progress-tasks")) {
+        const x = ulInProgress.querySelectorAll("li")
+        const listOfInProgress = []
+        for(let li of x) {
+            listOfInProgress.unshift(li.textContent)
+        }
+        tasks["in-progress"] = listOfInProgress
+    }
+    else if ((target.parentElement.classList[0] === "to-do-tasks")) {
+        const x = ulToDo.querySelectorAll("li")
+        const listOfToDo = []
+        for(let li of x) {
+            listOfToDo.unshift(li.textContent)
+        }
+        tasks["todo"] = listOfToDo
+    }
+}
+
 
 
