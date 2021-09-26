@@ -191,7 +191,7 @@ function changeBackground() {
 
 function defaultBackground() {
     document.body.style.backgroundImage = `url("markus-winkler-3Rn2EjoAC1g-unsplash.jpg")`;
-    localStorage.setItem("background", `url("solution/markus-winkler-3Rn2EjoAC1g-unsplash.jpg")`); // Returns to the default background- Updated in local storage as "background"
+    localStorage.setItem("background", `url("markus-winkler-3Rn2EjoAC1g-unsplash.jpg")`); // Returns to the default background- Updated in local storage as "background"
     
 }
 
