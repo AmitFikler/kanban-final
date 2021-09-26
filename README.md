@@ -3,16 +3,16 @@
 
 ## Introdaction 📌
 
-This site made as a final-task for cyber4s full stack course.
+This site made as a final-task for cyber4s full stack pre-course.
 The site allows the user to manage his tasks in a convenient and organized way.
 The site was built in HTML CSS & VANILLA JS(No external libraries)
 
 ## Task organization 📝
 You can hover over task and click:
-        ALT + 1- Move task to "TO-DO" list
-        ALT + 2- Move task to "In-Progress" list
-        ALT + 3- Move task to "Done" list
-        ALT + 4- Remove task
+ALT + 1- Move task to "TO-DO" list
+ALT + 2- Move task to "In-Progress" list
+ALT + 3- Move task to "Done" list
+ALT + 4- Remove task
 
 You can add task by pressing add.
 You can change backgroung image.
