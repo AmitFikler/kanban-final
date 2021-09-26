@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="./styles.css" />
     <title>Tasks manager</title>
 </head>
-<body>
+<body id="body">
     <header>
         <h2 id= "page-title">Tasks manager</h2>
         <input id="search">
+        <button id="clear-tasks">clear tasks</button>
     </header>
     <main>
         <section id = to-do-sec>
@@ -19,22 +20,29 @@
             <ul class="to-do-tasks">
             </ul>
             <input type="text" id="add-to-do-task" placeholder="add TO-DO task">
-            <span><button type="submit" id="submit-add-to-do">Add</button></span>
+            <span><button type="submit" id="submit-add-to-do" class="add-task">Add</button></span>
         </section>
         <section id = "in-progress-sec">
             <h3>In progress</h3>
             <ul class="in-progress-tasks">
             </ul>
             <input type="text" id="add-in-progress-task" placeholder="add in progress task">
-            <span><button type="submit" id="submit-add-in-progress">Add</button></span>
+            <span><button type="submit" id="submit-add-in-progress" class="add-task">Add</button></span>
         </section>
         <section id = "done-sec">
             <h3>Done</h3>
             <ul class="done-tasks">
             </ul>
             <input type="text" id="add-done-task" placeholder="add done task">
-            <span><button type="submit" id="submit-add-done">Add</button></span>
+            <span><button type="submit" id="submit-add-done" class="add-task">Add</button></span>
         </section>
     </main>
+    <footer>
+        <div id="background-changing">
+            <h4>change background img</h4>
+            <input type="text" placeholder="enter URL" id="background-url">
+            <button id="background">change</button><span><button id="background-default">default</button></span>
+        </div>
+    </footer>
 </body>
 </html>
