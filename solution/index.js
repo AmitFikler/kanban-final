@@ -124,6 +124,14 @@ function handleMouseEvents(event) { // Activated when the mouse is on an element
                     elementTextFocus = undefined;
                 }
             }
+            if (e.altKey && e.key === "4") {
+                if (elementTextFocus !== undefined) {
+                    elementFocus.remove() // Moves the element with the focus to the Done ul by pressing ALT + 3
+                    localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
+                    getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
+                    elementTextFocus = undefined;
+                }
+            }
         });
     }
 }
@@ -132,29 +140,32 @@ function handleAddClickEvents(e) { // A function that attaches the task that the
 
     if (e.target.id === "submit-add-to-do"){
         if (!inputToDo.value) {
-            alert("you can not enter empty task");
+            alert("You can't enter an empty task!");
         } else {
             addTaskToUL(inputToDo.value, ulToDo);
             localStorage.setItem("tasks",JSON.stringify(watchTheDom())); // Updates the local storage according to what you "see" on the page
             getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
+            inputToDo.value = "";
         }
     }
     if (e.target.id === "submit-add-in-progress"){
         if (!inputInProgress.value) {
-            alert("you can not enter empty task");
+            alert("You can't enter an empty task!");
         } else {
             addTaskToUL(inputInProgress.value, ulInProgress);
             localStorage.setItem("tasks",JSON.stringify(watchTheDom())); // Updates the local storage according to what you "see" on the page
             getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
+            inputInProgress.value = "";
         }
     }
     if (e.target.id === "submit-add-done"){
         if (!inputDone.value) {
-            alert("you can not enter empty task");
+            alert("You can't enter an empty task!");
         } else {
             addTaskToUL(inputDone.value, ulDone)
             localStorage.setItem("tasks",JSON.stringify(watchTheDom())); // Updates the local storage according to what you "see" on the page
             getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
+            inputDone.value = "";
 
         }
     }
@@ -183,6 +194,14 @@ function defaultBackground() {
     localStorage.setItem("background", `url("markus-winkler-3Rn2EjoAC1g-unsplash.jpg")`); // Returns to the default background- Updated in local storage as "background"
     
 }
+
+document.getElementById("explain").addEventListener("mouseenter", (e) => {
+    document.getElementById("explainig").style.display = "block"
+})
+
+document.getElementById("explain").addEventListener("mouseout", (e) => {
+    document.getElementById("explainig").style.display = "none"
+})
 
 
 /*/\/\/\/\/\ AUXILIARY FUNCTIONS FOR BUILDING THE DOM /\/\/\/\/\*/
