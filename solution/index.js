@@ -59,9 +59,9 @@ document.querySelectorAll(".add-task").forEach((btn) => btn.addEventListener("cl
 
 document.addEventListener("dblclick", listenForDoubleClick);
 
-loadBtn.addEventListener("click", getData);
+loadBtn.addEventListener("click", loadFromApi);
 
-saveBtn.addEventListener("click", saveData);
+saveBtn.addEventListener("click", saveToApi);
 
 
 
@@ -100,41 +100,86 @@ function handleMouseEvents(event) { // Activated when the mouse is on an element
         elementFocus = event.target;
         elementTextFocus = event.target.textContent;
         document.addEventListener("keydown", (e) => {
-            if(e.altKey && e.key === "1") {
-                if (elementTextFocus !== undefined) {
-                    ulToDo.insertBefore(elementFocus,ulToDo.firstChild); // Moves the element with the focus to the TODO ul by pressing ALT + 1
-                    localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
-                    getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
-                    elementTextFocus = undefined; 
+            if(e.altKey) {
+                switch(e.key) {
+                    case 1: {
+                        if (elementTextFocus !== undefined) {
+                            ulToDo.insertBefore(elementFocus,ulToDo.firstChild); // Moves the element with the focus to the TODO ul by pressing ALT + 1
+                            localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
+                            getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
+                            elementTextFocus = undefined; 
+                        }
+                        break;
+                    }
+                    case 2: {
+                        if (elementTextFocus !== undefined) {
+                            ulInProgress.insertBefore(elementFocus,ulInProgress.firstChild); // Moves the element with the focus to the In-Progress ul by pressing ALT + 2
+                            localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
+                            getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
+                            elementTextFocus = undefined;
+                        }
+                        break;
+                    }
+                    case 3: {
+                        if (elementTextFocus !== undefined) {
+                            ulDone.insertBefore(elementFocus,ulDone.firstChild); // Moves the element with the focus to the Done ul by pressing ALT + 3
+                            localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
+                            getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
+                            elementTextFocus = undefined;
+                        }
+                        break;
+                    }
+
+                    case 4: {
+                        if (elementTextFocus !== undefined) {
+                            elementFocus.remove() // Moves the element with the focus to the Done ul by pressing ALT + 3
+                            localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
+                            getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
+                            elementTextFocus = undefined;
+                        }
+                        break;
+                    }
+
                 }
             }
-            if (e.altKey && e.key === "2") {
-                if (elementTextFocus !== undefined) {
-                    ulInProgress.insertBefore(elementFocus,ulInProgress.firstChild); // Moves the element with the focus to the In-Progress ul by pressing ALT + 2
-                    localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
-                    getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
-                    elementTextFocus = undefined;
-                }
-            }
-            if (e.altKey && e.key === "3") {
-                if (elementTextFocus !== undefined) {
-                    ulDone.insertBefore(elementFocus,ulDone.firstChild); // Moves the element with the focus to the Done ul by pressing ALT + 3
-                    localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
-                    getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
-                    elementTextFocus = undefined;
-                }
-            }
-            if (e.altKey && e.key === "4") {
-                if (elementTextFocus !== undefined) {
-                    elementFocus.remove() // Moves the element with the focus to the Done ul by pressing ALT + 3
-                    localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
-                    getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
-                    elementTextFocus = undefined;
-                }
-            }
-        });
-    }
+        }
+    )}
 }
+//             if(e.altKey && e.key === "1") {
+//                 if (elementTextFocus !== undefined) {
+//                     ulToDo.insertBefore(elementFocus,ulToDo.firstChild); // Moves the element with the focus to the TODO ul by pressing ALT + 1
+//                     localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
+//                     getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
+//                     elementTextFocus = undefined; 
+//                 }
+//             }
+//             if (e.altKey && e.key === "2") {
+//                 if (elementTextFocus !== undefined) {
+//                     ulInProgress.insertBefore(elementFocus,ulInProgress.firstChild); // Moves the element with the focus to the In-Progress ul by pressing ALT + 2
+//                     localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
+//                     getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
+//                     elementTextFocus = undefined;
+//                 }
+//             }
+//             if (e.altKey && e.key === "3") {
+//                 if (elementTextFocus !== undefined) {
+//                     ulDone.insertBefore(elementFocus,ulDone.firstChild); // Moves the element with the focus to the Done ul by pressing ALT + 3
+//                     localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
+//                     getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
+//                     elementTextFocus = undefined;
+//                 }
+//             }
+//             if (e.altKey && e.key === "4") {
+//                 if (elementTextFocus !== undefined) {
+//                     elementFocus.remove() // Moves the element with the focus to the Done ul by pressing ALT + 3
+//                     localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
+//                     getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
+//                     elementTextFocus = undefined;
+//                 }
+//             }
+//         });
+//     }
+// }
 
 function handleAddClickEvents(e) { // A function that attaches the task that the user wrote and to the list relevant to it.
 
@@ -232,61 +277,69 @@ function addTaskToUL(task,ul) { //Adds a new task element to the relevant UL
 
 
 /*/\/\/\/\/\ API FUNCTIONS /\/\/\/\/\*/
+const TASKS_API_URL = 'https://json-bins.herokuapp.com/bin/614aece24021ac0e6c080c6f'
 
 async function getData() {
-    // create "loading" indicator
-    const loader = document.createElement("span");
-    loader.innerHTML = `<div class='lds-ellipsis loader' id="spinner"><div></div><div></div><div></div><div></div></div>`;
-    document.body.append(loader);
-    
-    const response = await fetch("https://json-bins.herokuapp.com/bin/614aece24021ac0e6c080c6f",{
-        method: "GET"
-    });
-    if (!response.ok) {  //If the request is invalid
-        alert(`error ${response.status}`);
-    }
-    loader.remove(); // remove loader from dom
-    const data = await response.json();
-    document.querySelectorAll("li").forEach((li) => li.remove()); // Delete all li to avoid duplication
-    localStorage.setItem("tasks",JSON.stringify(data.tasks)); // Create local storage "tasks" according to what is in the API
-    getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks")); // Define getLocalStorageTasks for what is in local storage
-    updatedDom(); 
+    const loaded = await request("GET", null)
+    return loaded.tasks
 }
 
 async function saveData() {
-    // create "loading" indicator
+    return request("PUT",ApiData)
+
+}
+
+function createLoader() {
     const loader = document.createElement("span");
     loader.innerHTML = `<div class='lds-ellipsis loader' id="spinner"><div></div><div></div><div></div><div></div></div>`;
     document.body.append(loader);
-    //api response
-    const ApiData = {
-        "_id": "614aece24021ac0e6c080c6f",
-        "name": "AmitFikler",
-        "tasks": watchTheDom(), // Saves an object according to what is "seen" on the page
-        "createdAt": "2021-09-22T08:44:18.431Z",
-        "updatedAt": new Date().toJSON().slice(0,10).replace(/-/g,'/'),
+}
+
+function removeLoader() {
+    document.querySelector(".loader").remove()
+}
+
+async function request(method = '', data = null) {
+    const options = {
+      method: method,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
     };
-    const response = await fetch("https://json-bins.herokuapp.com/bin/614aece24021ac0e6c080c6f", {
-        method: "PUT",
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(ApiData)
-});
-    if(!response.ok) {
-        alert("error");
+    if (data) {
+        options.body = JSON.stringify(data);
     }
-    loader.remove();
+    const response = await fetch(TASKS_API_URI, options);
+
+    return response.json();
 }
 
 
+const ApiData = {
+    "_id": "614aece24021ac0e6c080c6f",
+    "name": "AmitFikler",
+    "tasks": watchTheDom(), // Saves an object according to what is "seen" on the page
+    "createdAt": "2021-09-22T08:44:18.431Z",
+    "updatedAt": new Date().toJSON().slice(0,10).replace(/-/g,'/'),
+};
+
+const TASKS_API_URI = 'https://json-bins.herokuapp.com/bin/614aece24021ac0e6c080c6f'
 
 
+async function loadFromApi() {
+    createLoader();
+    localStorage.setItem("tasks",JSON.stringify(await getData())); // Create local storage "tasks" according to what is in the API
+    getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks")); // Define getLocalStorageTasks for what is in local storage
+    removeLoader()
+    document.querySelectorAll("li").forEach((li) => li.remove()) // Delete all li to avoid duplication
+    updatedDom(); 
+    
+}
 
 
-
-
-
-
-
+async function saveToApi() {
+    createLoader()
+    await saveData()
+    removeLoader()
+}
