@@ -35,11 +35,9 @@ searchBar.addEventListener('keyup', (e) => { // A search bar that updates the DO
     for (let i of liElements) {
         if (!i.textContent.toLowerCase().includes(searchString)) {
             i.style.display = "none";
-            localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
         }
         else {
             i.style.display = "";
-            localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
         }
     }
 });
@@ -50,7 +48,7 @@ document.getElementById("background-default").addEventListener("click",defaultBa
 
 document.getElementById("clear-tasks").addEventListener("click", (e)=> { // clear the tasks and the local storage
     document.querySelectorAll("li").forEach((li) => li.remove())
-    localStorage.setItem("tasks",JSON.stringify(watchTheDom()))
+    updateGetLocalStorageTasks()
 })
 
 document.addEventListener('mouseover', handleMouseEvents);
@@ -93,125 +91,75 @@ function watchTheDom() {   // A function that supposedly views the site and retu
 }
 
 
+
 /*/\/\/\/\/\ EVENT LISTENERS FUNCTIONS /\/\/\/\/\*/
 
 function handleMouseEvents(event) { // Activated when the mouse is on an element
     if (event.target.classList.contains("task")){
-        elementFocus = event.target;
-        elementTextFocus = event.target.textContent;
+        elementTextFocus = event.target.textContent
+        elementFocus = event.target
         document.addEventListener("keydown", (e) => {
             if(e.altKey) {
-                switch(e.key) {
-                    case 1: {
-                        if (elementTextFocus !== undefined) {
-                            ulToDo.insertBefore(elementFocus,ulToDo.firstChild); // Moves the element with the focus to the TODO ul by pressing ALT + 1
-                            localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
-                            getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
-                            elementTextFocus = undefined; 
-                        }
-                        break;
-                    }
-                    case 2: {
-                        if (elementTextFocus !== undefined) {
-                            ulInProgress.insertBefore(elementFocus,ulInProgress.firstChild); // Moves the element with the focus to the In-Progress ul by pressing ALT + 2
-                            localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
-                            getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
-                            elementTextFocus = undefined;
-                        }
-                        break;
-                    }
-                    case 3: {
-                        if (elementTextFocus !== undefined) {
-                            ulDone.insertBefore(elementFocus,ulDone.firstChild); // Moves the element with the focus to the Done ul by pressing ALT + 3
-                            localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
-                            getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
-                            elementTextFocus = undefined;
-                        }
-                        break;
-                    }
-
-                    case 4: {
-                        if (elementTextFocus !== undefined) {
-                            elementFocus.remove() // Moves the element with the focus to the Done ul by pressing ALT + 3
-                            localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
-                            getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
-                            elementTextFocus = undefined;
-                        }
-                        break;
-                    }
-
+                if(e.key === "1") {
+                    mouseEventFocus(elementTextFocus,elementFocus,ulToDo)
+                }
+                if (e.key === "2") {
+                    mouseEventFocus(elementTextFocus,elementFocus,ulInProgress)
+                }
+                if (e.key === "3") {
+                    mouseEventFocus(elementTextFocus,elementFocus,ulDone)
+                }
+                if (e.key === "4") {
+                    mouseEventRemove(elementTextFocus,elementFocus)
                 }
             }
-        }
-    )}
+        });
+    }
 }
-//             if(e.altKey && e.key === "1") {
-//                 if (elementTextFocus !== undefined) {
-//                     ulToDo.insertBefore(elementFocus,ulToDo.firstChild); // Moves the element with the focus to the TODO ul by pressing ALT + 1
-//                     localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
-//                     getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
-//                     elementTextFocus = undefined; 
-//                 }
-//             }
-//             if (e.altKey && e.key === "2") {
-//                 if (elementTextFocus !== undefined) {
-//                     ulInProgress.insertBefore(elementFocus,ulInProgress.firstChild); // Moves the element with the focus to the In-Progress ul by pressing ALT + 2
-//                     localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
-//                     getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
-//                     elementTextFocus = undefined;
-//                 }
-//             }
-//             if (e.altKey && e.key === "3") {
-//                 if (elementTextFocus !== undefined) {
-//                     ulDone.insertBefore(elementFocus,ulDone.firstChild); // Moves the element with the focus to the Done ul by pressing ALT + 3
-//                     localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
-//                     getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
-//                     elementTextFocus = undefined;
-//                 }
-//             }
-//             if (e.altKey && e.key === "4") {
-//                 if (elementTextFocus !== undefined) {
-//                     elementFocus.remove() // Moves the element with the focus to the Done ul by pressing ALT + 3
-//                     localStorage.setItem("tasks",JSON.stringify(watchTheDom()));
-//                     getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
-//                     elementTextFocus = undefined;
-//                 }
-//             }
-//         });
-//     }
-// }
+
+function mouseEventFocus(text,element,ul) {
+    if (text !== undefined) {
+        ul.insertBefore(element,ul.firstChild);
+        updateGetLocalStorageTasks()
+        text = undefined; 
+    }
+}
+function mouseEventRemove(text, element) {
+    if (text !== undefined) {
+        element.remove()
+        updateGetLocalStorageTasks()
+        text = undefined; 
+    }
+}
 
 function handleAddClickEvents(e) { // A function that attaches the task that the user wrote and to the list relevant to it.
+    addTask(e.target.id)
+    updateGetLocalStorageTasks()
+}
 
-    if (e.target.id === "submit-add-to-do"){
+function addTask(submit) {
+    if (submit === "submit-add-to-do"){
         if (!inputToDo.value) {
             alert("You can't enter an empty task!");
         } else {
             addTaskToUL(inputToDo.value, ulToDo);
-            localStorage.setItem("tasks",JSON.stringify(watchTheDom())); // Updates the local storage according to what you "see" on the page
-            getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
             inputToDo.value = "";
         }
     }
-    if (e.target.id === "submit-add-in-progress"){
+    if (submit === "submit-add-in-progress"){
         if (!inputInProgress.value) {
             alert("You can't enter an empty task!");
         } else {
             addTaskToUL(inputInProgress.value, ulInProgress);
-            localStorage.setItem("tasks",JSON.stringify(watchTheDom())); // Updates the local storage according to what you "see" on the page
-            getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
             inputInProgress.value = "";
         }
     }
-    if (e.target.id === "submit-add-done"){
+    if (submit === "submit-add-done"){
         if (!inputDone.value) {
             alert("You can't enter an empty task!");
         } else {
             addTaskToUL(inputDone.value, ulDone)
-            localStorage.setItem("tasks",JSON.stringify(watchTheDom())); // Updates the local storage according to what you "see" on the page
-            getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
             inputDone.value = "";
-
         }
     }
 }
@@ -220,10 +168,8 @@ function listenForDoubleClick(element) { //By double-clicking you can edit a lis
     if (element.target.classList.contains("task")){
         element.target.contentEditable = true;
         element.target.onblur = function(){
-            localStorage.setItem("tasks", JSON.stringify(watchTheDom()));
             element.target.contentEditable = false;
-            getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
-
+            updateGetLocalStorageTasks()
         }
     }
 }
@@ -254,18 +200,22 @@ document.getElementById("explain").addEventListener("mouseout", (e) => {
 function updatedDom(){  // Updates the DOM according to the local storage "tasks"
     for (let key in getLocalStorageTasks) {
         for(let ele of getLocalStorageTasks[key]) {
-            if (key === "todo") {
-                addTaskToUL(ele,ulToDo);
-            }
-            if (key === "in-progress") {
-                addTaskToUL(ele,ulInProgress);
-            }
-            if (key === "done"){
-                addTaskToUL(ele, ulDone);
-            }
+            addTaskbyKey(key,ele)
         }
     }
     getLocalStorageTasks = watchTheDom(); // Saved as the DOM appears
+}
+
+function addTaskbyKey(key,ele){
+    if (key === "todo") {
+        addTaskToUL(ele,ulToDo);
+    }
+    if (key === "in-progress") {
+        addTaskToUL(ele,ulInProgress);
+    }
+    if (key === "done"){
+        addTaskToUL(ele, ulDone);
+    }
 }
 
 function addTaskToUL(task,ul) { //Adds a new task element to the relevant UL
@@ -273,6 +223,10 @@ function addTaskToUL(task,ul) { //Adds a new task element to the relevant UL
     newTask.textContent = task;
     newTask.classList.add("task");
     ul.insertBefore(newTask,ul.firstChild);
+}
+function updateGetLocalStorageTasks() {
+    localStorage.setItem("tasks",JSON.stringify(watchTheDom())); // Updates the local storage according to what you "see" on the page
+    getLocalStorageTasks = JSON.parse(localStorage.getItem("tasks"));
 }
 
 
@@ -343,3 +297,5 @@ async function saveToApi() {
     await saveData()
     removeLoader()
 }
+
+
