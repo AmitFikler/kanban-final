@@ -1,8 +1,8 @@
 const fetch = require('node-fetch')
 const fs = require('fs')
 
-const BASE_URL = 'https://json-bins.herokuapp.com'
-;(async () => {
+const BASE_URL = 'https://json-bins.herokuapp.com';
+(async () => {
   const args = process.argv.slice(2)
   if (!args.length) {
     console.log('name missing')
@@ -12,19 +12,20 @@ const BASE_URL = 'https://json-bins.herokuapp.com'
   const data = await fetch(`${BASE_URL}/create`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       name,
       tasks: {
         todo: [],
         'in-progress': [],
-        done: [],
-      },
-    }),
+        done: []
+      }
+    })
   })
-  const binId = (await data.json()).binId
+  const { binId } = await data.json()
   fs.writeFileSync(
+    // eslint-disable-next-line global-require
     require('path').join(__dirname, '..', 'api-data.txt'),
     `
 Your bin ID: ${binId}
